@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  examples:
+  example:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,10 @@ jobs:
       - name: Set up Zig
         uses: goto-bus-stop/setup-zig@v2
 
-      - name: Run examples
-        run: zig build examples
+      - name: Run example
+        run: zig build example
 
-  tests:
+  example_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -35,8 +35,8 @@ jobs:
       - name: Set up Zig
         uses: goto-bus-stop/setup-zig@v2
 
-      - name: Run tests
-        run: zig build tests
+      - name: Run example test
+        run: zig build example_test
 
       - name: Set up kcov
         run: sudo apt install kcov
