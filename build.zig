@@ -67,9 +67,9 @@ pub fn build(b: *std.Build) void {
         .root_source_file = std.Build.LazyPath.relative("example/test.zig"),
     });
     example_test.root_module.addImport("quickphf", quickphf_mod);
+    example_test.step.dependOn(example_step);
 
     const example_test_run = b.addRunArtifact(example_test);
-    example_test_run.step.dependOn(example_step);
     example_test_step.dependOn(&example_test_run.step);
     b.default_step.dependOn(example_test_step);
 
@@ -85,7 +85,7 @@ pub fn build(b: *std.Build) void {
     const lints_step = b.step("lints", "Run lints");
 
     const lints = b.addFmt(.{
-        .paths = &.{ "src/", "build.zig" },
+        .paths = &.{ "src/", "example/", "build.zig" },
         .check = true,
     });
     lints_step.dependOn(&lints.step);

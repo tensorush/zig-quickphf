@@ -1,6 +1,7 @@
 const std = @import("std");
 const Phf = @import("phf.zig").Phf;
 
+/// Static minimal perfect hash map code generator.
 pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) type {
     return struct {
         const Self = @This();
@@ -9,10 +10,12 @@ pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) typ
         vals: *const [NUM_ENTRIES]V,
         phf: Phf(K, NUM_ENTRIES),
 
+        /// Initialize code generator.
         pub fn init(keys: *const [NUM_ENTRIES]K, vals: *const [NUM_ENTRIES]V) Self {
             return .{ .phf = Phf(K, NUM_ENTRIES).init(keys), .vals = vals, .keys = keys };
         }
 
+        /// Generate source file at given path containing hash map with given name.
         pub fn generate(self: Self, path: []const u8, name: []const u8) !void {
             var file = try std.fs.cwd().createFile(path, .{});
             defer file.close();
