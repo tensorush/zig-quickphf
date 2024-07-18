@@ -5,7 +5,7 @@
 [![DC][dc-shd]][dc-url]
 [![LC][lc-shd]][lc-url]
 
-## Zig port of [quickphf library](https://github.com/dtrifuno/quickphf) for generating static hash maps.
+## Zig port of [quickphf library](https://github.com/dtrifuno/quickphf) for static hash map generation.
 
 ### :rocket: Usage
 
