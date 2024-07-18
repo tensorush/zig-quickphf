@@ -1,4 +1,4 @@
-//! Static hash map generated with [QuickPhf](https://github.com/tensorush/zig-quickphf).
+//! Static hash map generated with [quickphf](https://github.com/tensorush/zig-quickphf).
 
 const quickphf = @import("quickphf");
 

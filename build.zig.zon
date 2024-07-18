@@ -3,16 +3,16 @@
     .version = "0.1.0",
     .dependencies = .{
         .quickdiv = .{
-            .url = "https://github.com/tensorush/zig-quickdiv/archive/dfa61d4.tar.gz",
-            .hash = "1220b6901435076ea1817105df24d0f4cde730aa45ff301c05870b7107526ba53ab6",
+            .url = "https://github.com/tensorush/zig-quickdiv/archive/54d77f5.tar.gz",
+            .hash = "12209702843d4162084c666cae57284dfe6977b89dff0fdb0a0dbaf2fd0c78501f7a",
         },
     },
     .paths = .{
         "src/",
         "example/",
         "build.zig",
-        "README.md",
-        "LICENSE.md",
         "build.zig.zon",
+        "LICENSE",
+        "README.md",
     },
 }

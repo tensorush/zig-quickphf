@@ -23,7 +23,7 @@ pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) typ
             var buf_writer = std.io.bufferedWriter(file.writer());
             const writer = buf_writer.writer();
 
-            try writer.writeAll("//! Static hash map generated with [QuickPhf](https://github.com/tensorush/zig-quickphf).\n\n");
+            try writer.writeAll("//! Static hash map generated with [quickphf](https://github.com/tensorush/zig-quickphf).\n\n");
             try writer.writeAll("const quickphf = @import(\"quickphf\");\n\n");
             try writer.print("pub const {s} = quickphf.Map({s}, {s}).init(\n", .{ name, @typeName(K), @typeName(V) });
             try writer.print("    {d},\n", .{self.phf.seed});

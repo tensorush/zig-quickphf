@@ -3,7 +3,7 @@ const std = @import("std");
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
-    const root_source_file = std.Build.LazyPath.relative("src/lib.zig");
+    const root_source_file = b.path("src/lib.zig");
     const version = std.SemanticVersion{ .major = 0, .minor = 1, .patch = 0 };
 
     // Dependencies
@@ -33,16 +33,16 @@ pub fn build(b: *std.Build) void {
     lib_step.dependOn(&lib_install.step);
     b.default_step.dependOn(lib_step);
 
-    // Docs
-    const docs_step = b.step("docs", "Emit docs");
+    // Documentation
+    const doc_step = b.step("doc", "Emit documentation");
 
-    const docs_install = b.addInstallDirectory(.{
+    const doc_install = b.addInstallDirectory(.{
         .install_dir = .prefix,
-        .install_subdir = "docs",
+        .install_subdir = "doc",
         .source_dir = lib.getEmittedDocs(),
     });
-    docs_step.dependOn(&docs_install.step);
-    b.default_step.dependOn(docs_step);
+    doc_step.dependOn(&doc_install.step);
+    b.default_step.dependOn(doc_step);
 
     // Example
     const example_step = b.step("example", "Run example");
@@ -52,42 +52,36 @@ pub fn build(b: *std.Build) void {
         .target = target,
         .version = version,
         .optimize = optimize,
-        .root_source_file = std.Build.LazyPath.relative("example/main.zig"),
+        .root_source_file = b.path(EXAMPLE_DIR ++ "main.zig"),
     });
     example.root_module.addImport("quickphf", quickphf_mod);
 
     const example_run = b.addRunArtifact(example);
-    example_step.dependOn(&example_run.step);
-
-    // Example test
-    const example_test_step = b.step("example_test", "Run example test");
 
     const example_test = b.addTest(.{
         .target = target,
-        .root_source_file = std.Build.LazyPath.relative("example/test.zig"),
+        .root_source_file = b.path(EXAMPLE_DIR ++ "test.zig"),
     });
     example_test.root_module.addImport("quickphf", quickphf_mod);
-    example_test.step.dependOn(example_step);
+    example_test.step.dependOn(&example_run.step);
 
     const example_test_run = b.addRunArtifact(example_test);
-    example_test_step.dependOn(&example_test_run.step);
-    b.default_step.dependOn(example_test_step);
+    example_step.dependOn(&example_test_run.step);
+    b.default_step.dependOn(example_step);
 
-    // Coverage
-    const cov_step = b.step("cov", "Generate coverage");
+    // Formatting checks
+    const fmt_step = b.step("fmt", "Run formatting checks");
 
-    const cov_run = b.addSystemCommand(&.{ "kcov", "--clean", "--include-pattern=src/", "kcov-output" });
-    cov_run.addArtifactArg(example_test);
-    cov_step.dependOn(&cov_run.step);
-    b.default_step.dependOn(cov_step);
-
-    // Lints
-    const lints_step = b.step("lints", "Run lints");
-
-    const lints = b.addFmt(.{
-        .paths = &.{ "src/", "example/", "build.zig" },
+    const fmt = b.addFmt(.{
+        .paths = &.{
+            "src/",
+            "build.zig",
+            EXAMPLE_DIR,
+        },
         .check = true,
     });
-    lints_step.dependOn(&lints.step);
-    b.default_step.dependOn(lints_step);
+    fmt_step.dependOn(&fmt.step);
+    b.default_step.dependOn(fmt_step);
 }
+
+const EXAMPLE_DIR = "example/";
