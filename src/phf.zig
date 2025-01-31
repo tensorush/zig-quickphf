@@ -1,6 +1,6 @@
 const std = @import("std");
 const utils = @import("utils.zig");
-const quickdiv = @import("quickdiv");
+const Divisor = @import("quickdiv.zig").Divisor(u64);
 
 const MIN_COEF: f64 = 1.5;
 const MAX_ALPHA: f64 = 0.99;
@@ -61,8 +61,8 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
 
         /// Initialize minimal perfect hash function.
         pub fn init(keys: *const [NUM_KEYS]K) Self {
-            const codomain_len = quickdiv.DivisorU64.init(CODOMAIN_SIZE);
-            const num_buckets = quickdiv.DivisorU64.init(NUM_BUCKETS);
+            const codomain_len = Divisor.init(CODOMAIN_SIZE);
+            const num_buckets = Divisor.init(NUM_BUCKETS);
             var cur_key: u64 = 1;
             outer: while (cur_key <= EMPTY_KEY) : (cur_key += 1) {
                 const seed = cur_key << 32;

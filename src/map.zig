@@ -1,6 +1,6 @@
 const std = @import("std");
 const utils = @import("utils.zig");
-const quickdiv = @import("quickdiv");
+const Divisor = @import("quickdiv.zig").Divisor(u64);
 
 /// Static minimal perfect hash map that stores its keys.
 pub fn Map(comptime K: type, comptime V: type) type {
@@ -48,8 +48,8 @@ fn RawMap(comptime K: type, comptime V: type) type {
     return struct {
         const Self = @This();
 
-        codomain_len: quickdiv.DivisorU64,
-        buckets: quickdiv.DivisorU64,
+        codomain_len: Divisor,
+        buckets: Divisor,
         pilot_table: []const u16,
         free_slots: []const u32,
         values: []const V,
@@ -58,8 +58,8 @@ fn RawMap(comptime K: type, comptime V: type) type {
         /// Initialize raw map.
         pub fn init(seed: u64, pilot_table: []const u16, values: []const V, free_slots: []const u32) Self {
             return .{
-                .codomain_len = quickdiv.DivisorU64.init(@intCast(values.len + free_slots.len)),
-                .buckets = quickdiv.DivisorU64.init(@intCast((pilot_table.len))),
+                .codomain_len = Divisor.init(@intCast(values.len + free_slots.len)),
+                .buckets = Divisor.init(@intCast((pilot_table.len))),
                 .pilot_table = pilot_table,
                 .values = values,
                 .free_slots = free_slots,

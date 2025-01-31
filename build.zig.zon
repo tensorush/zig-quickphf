@@ -1,12 +1,6 @@
 .{
     .name = "quickphf",
-    .version = "0.1.0",
-    .dependencies = .{
-        .quickdiv = .{
-            .url = "https://github.com/tensorush/zig-quickdiv/archive/54d77f5.tar.gz",
-            .hash = "12209702843d4162084c666cae57284dfe6977b89dff0fdb0a0dbaf2fd0c78501f7a",
-        },
-    },
+    .version = "0.2.0",
     .paths = .{
         "src/",
         "example/",

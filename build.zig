@@ -4,18 +4,10 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
     const root_source_file = b.path("src/lib.zig");
-    const version = std.SemanticVersion{ .major = 0, .minor = 1, .patch = 0 };
-
-    // Dependencies
-    const quickdiv_dep = b.dependency("quickdiv", .{
-        .target = target,
-        .optimize = optimize,
-    });
-    const quickdiv_mod = quickdiv_dep.module("quickdiv");
+    const version = std.SemanticVersion{ .major = 0, .minor = 2, .patch = 0 };
 
     // Module
     const quickphf_mod = b.addModule("quickphf", .{ .root_source_file = root_source_file });
-    quickphf_mod.addImport("quickdiv", quickdiv_mod);
 
     // Library
     const lib_step = b.step("lib", "Install library");
@@ -27,7 +19,6 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .root_source_file = root_source_file,
     });
-    lib.root_module.addImport("quickdiv", quickdiv_mod);
 
     const lib_install = b.addInstallArtifact(lib, .{});
     lib_step.dependOn(&lib_install.step);

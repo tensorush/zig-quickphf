@@ -7,12 +7,12 @@
 
 ## Zig port of [quickphf library](https://github.com/dtrifuno/quickphf) for static hash map generation.
 
-### :rocket: Usage
+### Usage
 
 - Add `quickphf` dependency to `build.zig.zon`.
 
 ```sh
-zig fetch --save https://github.com/tensorush/zig-quickphf/archive/<git_tag_or_commit_hash>.tar.gz
+zig fetch --save git+https://github.com/tensorush/zig-quickphf#<git_tag_or_commit_hash>
 ```
 
 - Use `quickphf` dependency in `build.zig`.
