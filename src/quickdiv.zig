@@ -1,7 +1,6 @@
-//! Unsigned divisor optimized for repeated division and modulo operations.
-
 const std = @import("std");
 
+/// Unsigned divisor optimized for repeated division and modulo operations.
 pub fn Divisor(comptime T: type) type {
     if (std.meta.activeTag(@typeInfo(T)) != .int or
         @typeInfo(T).int.signedness != .unsigned or

@@ -1,6 +1,7 @@
 .{
-    .name = "quickphf",
-    .version = "0.2.0",
+    .name = .quickphf,
+    .fingerprint = 0xfbc2df748cb26bb1,
+    .version = "0.2.1",
     .paths = .{
         "src/",
         "example/",
