@@ -4,13 +4,13 @@
 
 ### Usage
 
-- Add `quickphf` dependency to `build.zig.zon`.
+1. Add `quickphf` dependency to `build.zig.zon`:
 
 ```sh
 zig fetch --save git+https://github.com/tensorush/zig-quickphf.git
 ```
 
-- Use `quickphf` dependency in `build.zig`.
+2. Use `quickphf` dependency in `build.zig`:
 
 ```zig
 const quickphf_dep = b.dependency("quickphf", .{

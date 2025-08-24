@@ -1,7 +1,7 @@
 .{
     .name = .quickphf,
-    .fingerprint = 0xfbc2df748cb26bb1,
     .version = "0.3.0",
+    .fingerprint = 0xfbc2df748cb26bb1, // Changing this has security and trust implications.
     .minimum_zig_version = "0.15.1",
     .paths = .{
         "src/",

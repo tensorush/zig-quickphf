@@ -100,8 +100,8 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
                 }
                 std.sort.pdq(BucketData, &buckets, {}, BucketData.lessThan);
 
-                var co_map = [1]u32{EMPTY_KEY} ** CODOMAIN_SIZE;
-                var pilot_table = [1]u16{0} ** NUM_BUCKETS;
+                var co_map: [CODOMAIN_SIZE]u32 = @splat(EMPTY_KEY);
+                var pilot_table: [NUM_BUCKETS]u16 = @splat(0);
                 for (buckets) |bucket| {
                     const bucket_keys = hashed_keys[bucket.start_idx .. bucket.start_idx + bucket.size];
                     var is_pilot_found = false;
@@ -142,7 +142,7 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
                     }
                 }
 
-                var free_slots = [1]u32{0} ** NUM_EXTRA_SLOTS;
+                var free_slots: [NUM_EXTRA_SLOTS]u32 = @splat(0);
                 var back_idx = NUM_KEYS;
                 var front_idx: u32 = 0;
                 while (front_idx < NUM_KEYS) : (front_idx += 1) {
