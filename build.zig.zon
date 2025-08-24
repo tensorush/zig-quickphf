@@ -1,7 +1,8 @@
 .{
     .name = .quickphf,
     .fingerprint = 0xfbc2df748cb26bb1,
-    .version = "0.2.1",
+    .version = "0.3.0",
+    .minimum_zig_version = "0.15.1",
     .paths = .{
         "src/",
         "example/",

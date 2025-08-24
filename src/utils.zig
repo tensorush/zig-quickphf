@@ -1,9 +1,10 @@
 const std = @import("std");
+
 const Divisor = @import("quickdiv.zig").Divisor(u64);
 
 /// Compute index for given hashed key.
-pub fn getIndex(key_hash: u64, pilot_hash: u64, codomain_len: Divisor) usize {
-    return codomain_len.remOf(key_hash ^ pilot_hash);
+pub fn getIndex(key_hash: u64, pilot_hash: u64, codomain_size: Divisor) usize {
+    return codomain_size.remOf(key_hash ^ pilot_hash);
 }
 
 /// Compute bucket for given hashed key.

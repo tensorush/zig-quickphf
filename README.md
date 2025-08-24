@@ -7,7 +7,7 @@
 - Add `quickphf` dependency to `build.zig.zon`.
 
 ```sh
-zig fetch --save git+https://github.com/tensorush/zig-quickphf
+zig fetch --save git+https://github.com/tensorush/zig-quickphf.git
 ```
 
 - Use `quickphf` dependency in `build.zig`.

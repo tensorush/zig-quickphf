@@ -1,5 +1,7 @@
 const std = @import("std");
+
 const utils = @import("utils.zig");
+
 const Divisor = @import("quickdiv.zig").Divisor(u64);
 
 const MIN_COEF: f64 = 1.5;
@@ -61,18 +63,18 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
 
         /// Initialize minimal perfect hash function.
         pub fn init(keys: *const [NUM_KEYS]K) Self {
-            const codomain_len = Divisor.init(CODOMAIN_SIZE);
-            const num_buckets = Divisor.init(NUM_BUCKETS);
+            const codomain_size: Divisor = .init(CODOMAIN_SIZE);
+            const num_buckets: Divisor = .init(NUM_BUCKETS);
             var cur_key: u64 = 1;
             outer: while (cur_key <= EMPTY_KEY) : (cur_key += 1) {
                 const seed = cur_key << 32;
                 var hashed_keys: [NUM_KEYS]HashedKey = undefined;
-                for (keys[0..], 0..) |key, idx| {
+                for (keys, 0..) |key, idx| {
                     const hash = utils.hashKey(key, seed);
                     const bucket = utils.getBucket(hash, num_buckets);
                     hashed_keys[idx] = .{ .bucket = bucket, .hash = hash, .idx = idx };
                 }
-                std.sort.pdq(HashedKey, hashed_keys[0..], {}, HashedKey.lessThan);
+                std.sort.pdq(HashedKey, &hashed_keys, {}, HashedKey.lessThan);
 
                 for (hashed_keys[0 .. NUM_KEYS - 1], hashed_keys[1..]) |e0, e1| {
                     if (e0.hash == e1.hash and e0.bucket == e1.bucket) {
@@ -85,7 +87,7 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
 
                 var buckets: [NUM_BUCKETS]BucketData = undefined;
                 var start_idx: usize = 0;
-                for (buckets[0..], 0..) |*bucket, idx| {
+                for (&buckets, 0..) |*bucket, idx| {
                     var size: usize = 0;
                     for (hashed_keys[start_idx..]) |hashed_key| {
                         if (hashed_key.bucket != idx) {
@@ -96,7 +98,7 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
                     bucket.* = .{ .start_idx = start_idx, .size = size, .idx = idx };
                     start_idx += size;
                 }
-                std.sort.pdq(BucketData, buckets[0..], {}, BucketData.lessThan);
+                std.sort.pdq(BucketData, &buckets, {}, BucketData.lessThan);
 
                 var co_map = [1]u32{EMPTY_KEY} ** CODOMAIN_SIZE;
                 var pilot_table = [1]u16{0} ** NUM_BUCKETS;
@@ -109,7 +111,7 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
                         const pilot_hash = utils.hashPilotValue(pilot);
                         var num_new_keys: usize = 0;
                         for (bucket_keys) |bucket_key| {
-                            const dest_idx = utils.getIndex(bucket_key.hash, pilot_hash, codomain_len);
+                            const dest_idx = utils.getIndex(bucket_key.hash, pilot_hash, codomain_size);
                             if (co_map[dest_idx] != EMPTY_KEY) {
                                 continue :outer_pilot;
                             }
@@ -156,7 +158,7 @@ pub fn Phf(comptime K: type, comptime NUM_KEYS: u64) type {
                 }
 
                 var map: [NUM_KEYS]u32 = undefined;
-                @memcpy(map[0..], co_map[0..NUM_KEYS]);
+                @memcpy(&map, co_map[0..NUM_KEYS]);
                 return .{ .pilot_table = pilot_table, .free_slots = free_slots, .seed = seed, .map = map };
             }
 

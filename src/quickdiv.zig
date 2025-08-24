@@ -81,7 +81,7 @@ pub fn Divisor(comptime T: type) type {
         }
 
         test Self {
-            var prng = std.Random.DefaultPrng.init(blk: {
+            var prng: std.Random.DefaultPrng = .init(blk: {
                 var seed: u64 = undefined;
                 try std.posix.getrandom(std.mem.asBytes(&seed));
                 break :blk seed;
@@ -90,7 +90,7 @@ pub fn Divisor(comptime T: type) type {
 
             for (1..100_000) |_| {
                 const num = random.intRangeAtMost(T, 1, std.math.maxInt(T));
-                const div = Self.init(random.intRangeAtMost(T, 1, std.math.maxInt(T)));
+                const div: Self = .init(random.intRangeAtMost(T, 1, std.math.maxInt(T)));
 
                 try std.testing.expectEqual(num / div.divisor, div.divOf(num));
                 try std.testing.expectEqual(num % div.divisor, div.remOf(num));

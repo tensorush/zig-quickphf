@@ -7,7 +7,9 @@ on:
   pull_request:
     branches: [main]
 
-  workflow_dispatch:
+concurrency:
+  group: ci
+  cancel-in-progress: true
 
 jobs:
   example:
@@ -15,14 +17,12 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Zig
-        uses: mlugg/setup-zig@v1
-        with:
-          version: master
+        uses: mlugg/setup-zig@v2
 
-      - name: Run example step
+      - name: Run `example` step
         run: zig build example
 
   fmt:
@@ -30,12 +30,10 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Zig
-        uses: mlugg/setup-zig@v1
-        with:
-          version: master
+        uses: mlugg/setup-zig@v2
 
-      - name: Run fmt step
+      - name: Run `fmt` step
         run: zig build fmt

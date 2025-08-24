@@ -1,5 +1,7 @@
 const std = @import("std");
+
 const utils = @import("utils.zig");
+
 const Divisor = @import("quickdiv.zig").Divisor(u64);
 
 /// Static minimal perfect hash map that stores its keys.
@@ -16,7 +18,7 @@ pub fn Map(comptime K: type, comptime V: type) type {
 
         /// Initialize map.
         pub fn init(seed: u64, pilot_table: []const u16, entries: []const Entry, free_slots: []const u32) Self {
-            return .{ .raw_map = RawMap(K, Entry).init(seed, pilot_table, entries, free_slots) };
+            return .{ .raw_map = .init(seed, pilot_table, entries, free_slots) };
         }
 
         /// Check if the map contains given key.
@@ -48,7 +50,7 @@ fn RawMap(comptime K: type, comptime V: type) type {
     return struct {
         const Self = @This();
 
-        codomain_len: Divisor,
+        codomain_size: Divisor,
         buckets: Divisor,
         pilot_table: []const u16,
         free_slots: []const u32,
@@ -58,8 +60,8 @@ fn RawMap(comptime K: type, comptime V: type) type {
         /// Initialize raw map.
         pub fn init(seed: u64, pilot_table: []const u16, values: []const V, free_slots: []const u32) Self {
             return .{
-                .codomain_len = Divisor.init(@intCast(values.len + free_slots.len)),
-                .buckets = Divisor.init(@intCast((pilot_table.len))),
+                .codomain_size = .init(@intCast(values.len + free_slots.len)),
+                .buckets = .init(@intCast((pilot_table.len))),
                 .pilot_table = pilot_table,
                 .values = values,
                 .free_slots = free_slots,
@@ -73,7 +75,7 @@ fn RawMap(comptime K: type, comptime V: type) type {
             const key_hash = utils.hashKey(key, self.seed);
             const bucket = utils.getBucket(key_hash, self.buckets);
             const pilot_hash = utils.hashPilotValue(self.pilot_table[bucket]);
-            const idx = utils.getIndex(key_hash, pilot_hash, self.codomain_len);
+            const idx = utils.getIndex(key_hash, pilot_hash, self.codomain_size);
             return if (idx < self.values.len) &self.values[idx] else &self.values[self.free_slots[idx - self.values.len]];
         }
     };

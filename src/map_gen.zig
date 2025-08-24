@@ -1,4 +1,7 @@
 const std = @import("std");
+
+const MAX_BUF_SIZE = 1 << 12;
+
 const Phf = @import("phf.zig").Phf;
 
 /// Static minimal perfect hash map code generator.
@@ -12,18 +15,19 @@ pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) typ
 
         /// Initialize code generator.
         pub fn init(keys: *const [NUM_ENTRIES]K, vals: *const [NUM_ENTRIES]V) Self {
-            return .{ .phf = Phf(K, NUM_ENTRIES).init(keys), .vals = vals, .keys = keys };
+            return .{ .phf = .init(keys), .vals = vals, .keys = keys };
         }
 
         /// Generate source file at given path containing hash map with given name.
         pub fn generate(self: Self, path: []const u8, name: []const u8) !void {
-            var file = try std.fs.cwd().createFile(path, .{});
-            defer file.close();
+            var out_file = try std.fs.cwd().createFile(path, .{});
+            defer out_file.close();
 
-            var buf_writer = std.io.bufferedWriter(file.writer());
-            const writer = buf_writer.writer();
+            var out_file_buf: [MAX_BUF_SIZE]u8 = undefined;
+            var out_file_writer = out_file.writer(&out_file_buf);
+            const writer = &out_file_writer.interface;
 
-            try writer.writeAll("//! Static hash map generated with [quickphf](https://github.com/tensorush/zig-quickphf).\n\n");
+            try writer.writeAll("//! Static hash map generated with `quickphf`:\n//! https://github.com/tensorush/zig-quickphf\n\n");
             try writer.writeAll("const quickphf = @import(\"quickphf\");\n\n");
             try writer.print("pub const {s} = quickphf.Map({s}, {s}).init(\n", .{ name, @typeName(K), @typeName(V) });
             try writer.print("    {d},\n", .{self.phf.seed});
@@ -42,7 +46,7 @@ pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) typ
             }
 
             try writer.writeAll("    &.{\n");
-            for (self.phf.map[0..]) |idx| {
+            for (&self.phf.map) |idx| {
                 try writer.writeAll("        .{ ");
                 try writer.print(".key = {any}, .val = {any}", .{ self.keys[idx], self.vals[idx] });
                 try writer.writeAll(" },\n");
@@ -62,7 +66,7 @@ pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) typ
                 try writer.writeAll(" },\n);\n");
             }
 
-            try buf_writer.flush();
+            try writer.flush();
         }
     };
 }
