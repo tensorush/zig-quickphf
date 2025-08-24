@@ -19,7 +19,7 @@ pub fn MapGen(comptime K: type, comptime V: type, comptime NUM_ENTRIES: u64) typ
         }
 
         /// Generate source file at given path containing hash map with given name.
-        pub fn generate(self: Self, path: []const u8, name: []const u8) !void {
+        pub fn generate(self: Self, path: []const u8, name: []const u8) (std.fs.File.OpenError || std.io.Writer.Error)!void {
             var out_file = try std.fs.cwd().createFile(path, .{});
             defer out_file.close();
 

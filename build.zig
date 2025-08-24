@@ -38,7 +38,7 @@ pub fn build(b: *std.Build) !void {
     // Example
     const example_step = b.step("example", "Run example");
 
-    const example = b.addExecutable(.{
+    const example_exe = b.addExecutable(.{
         .name = "example",
         .version = version,
         .root_module = b.createModule(.{
@@ -47,12 +47,10 @@ pub fn build(b: *std.Build) !void {
             .root_source_file = b.path(EXAMPLE_DIR ++ "main.zig"),
         }),
     });
-    example.root_module.addImport("quickphf", root_mod);
+    example_exe.root_module.addImport("quickphf", root_mod);
 
-    const example_run = b.addRunArtifact(example);
-    example_step.dependOn(&example_run.step);
-
-    install_step.dependOn(example_step);
+    const example_exe_run = b.addRunArtifact(example_exe);
+    example_step.dependOn(&example_exe_run.step);
 
     // Formatting check
     const fmt_step = b.step("fmt", "Check formatting");
