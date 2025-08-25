@@ -18,5 +18,10 @@ const quickphf_dep = b.dependency("quickphf", .{
     .optimize = optimize,
 });
 const quickphf_mod = quickphf_dep.module("quickphf");
-<compile>.root_module.addImport("quickphf", quickphf_mod);
+
+...
+    .imports = &.{
+        .{ .name = "quickphf", .module = quickphf_mod },
+    },
+...
 ```

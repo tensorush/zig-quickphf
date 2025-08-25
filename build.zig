@@ -45,9 +45,11 @@ pub fn build(b: *std.Build) !void {
             .target = target,
             .optimize = optimize,
             .root_source_file = b.path(EXAMPLE_DIR ++ "main.zig"),
+            .imports = &.{
+                .{ .name = "quickphf", .module = root_mod },
+            },
         }),
     });
-    example_exe.root_module.addImport("quickphf", root_mod);
 
     const example_exe_run = b.addRunArtifact(example_exe);
     example_step.dependOn(&example_exe_run.step);
