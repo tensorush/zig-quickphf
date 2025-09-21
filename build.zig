@@ -36,7 +36,7 @@ pub fn build(b: *std.Build) !void {
     docs_step.dependOn(&docs_install.step);
 
     // Example
-    const example_step = b.step("example", "Run example");
+    const example_step = b.step("run", "Run example");
 
     const example_exe = b.addExecutable(.{
         .name = "example",

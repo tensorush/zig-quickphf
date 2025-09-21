@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  example:
+  run:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,8 +24,8 @@ jobs:
       - name: Set up Zig
         uses: mlugg/setup-zig@v2
 
-      - name: Run `example` step
-        run: zig build example
+      - name: Run `run` step
+        run: zig build run
 
   fmt:
     runs-on: ubuntu-latest
@@ -39,3 +39,4 @@ jobs:
 
       - name: Run `fmt` step
         run: zig build fmt
+‘
